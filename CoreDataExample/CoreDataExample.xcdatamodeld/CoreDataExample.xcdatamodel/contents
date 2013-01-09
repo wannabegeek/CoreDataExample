@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="Test1.xcdatamodel" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Event">
-        <attribute name="timeStamp" optional="YES" attributeType="Date"/>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C3012" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="TFExchange" representedClassName="TFExchange" syncable="YES">
+        <attribute name="mnemonic" attributeType="String" syncable="YES"/>
+        <relationship name="symbols" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TFSymbol" inverseName="listingExchange" inverseEntity="TFSymbol" syncable="YES"/>
+    </entity>
+    <entity name="TFSymbol" representedClassName="TFSymbol">
+        <attribute name="change" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="chartURL" optional="YES" attributeType="Transformable" valueTransformerName="URLValueTransformer" syncable="YES"/>
+        <attribute name="company" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="high" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="lastUpdate" optional="YES" attributeType="Date">
+            <userInfo/>
+        </attribute>
+        <attribute name="low" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="ticker" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="volume" optional="YES" attributeType="Double" syncable="YES"/>
+        <relationship name="listingExchange" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="TFExchange" inverseName="symbols" inverseEntity="TFExchange" syncable="YES"/>
+        <userInfo/>
     </entity>
     <elements>
-        <element name="Event" positionX="261" positionY="189" width="128" height="60"/>
+        <element name="TFExchange" positionX="160" positionY="192" width="128" height="75"/>
+        <element name="TFSymbol" positionX="261" positionY="189" width="128" height="195"/>
     </elements>
 </model>

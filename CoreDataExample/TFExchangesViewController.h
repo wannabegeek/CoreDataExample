@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@class TFDetailViewController;
+@class TFSymbolDetailsViewController;
 
 #import <CoreData/CoreData.h>
 
-@interface TFMasterViewController : UITableViewController <NSFetchedResultsControllerDelegate>
+@interface TFExchangesViewController : UITableViewController <NSFetchedResultsControllerDelegate>
 
-@property (strong, nonatomic) TFDetailViewController *detailViewController;
+@property (strong, nonatomic) TFSymbolDetailsViewController *detailViewController;
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;

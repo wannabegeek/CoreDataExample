@@ -8,7 +8,7 @@
 
 #import "TFAppDelegate.h"
 
-#import "TFMasterViewController.h"
+#import "TFExchangesViewController.h"
 
 @implementation TFAppDelegate
 
@@ -25,11 +25,11 @@
 	    splitViewController.delegate = (id)navigationController.topViewController;
 	    
 	    UINavigationController *masterNavigationController = splitViewController.viewControllers[0];
-	    TFMasterViewController *controller = (TFMasterViewController *)masterNavigationController.topViewController;
+	    TFExchangesViewController *controller = (TFExchangesViewController *)masterNavigationController.topViewController;
 	    controller.managedObjectContext = self.managedObjectContext;
 	} else {
 	    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
-	    TFMasterViewController *controller = (TFMasterViewController *)navigationController.topViewController;
+	    TFExchangesViewController *controller = (TFExchangesViewController *)navigationController.topViewController;
 	    controller.managedObjectContext = self.managedObjectContext;
 	}
     return YES;

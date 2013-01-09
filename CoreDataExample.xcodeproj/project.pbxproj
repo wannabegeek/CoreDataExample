@@ -20,14 +20,28 @@
 		E25FE357169DC05700A67EBE /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E25FE355169DC05700A67EBE /* MainStoryboard_iPhone.storyboard */; };
 		E25FE35A169DC05700A67EBE /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E25FE358169DC05700A67EBE /* MainStoryboard_iPad.storyboard */; };
 		E25FE35D169DC05700A67EBE /* CoreDataExample.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E25FE35B169DC05700A67EBE /* CoreDataExample.xcdatamodeld */; };
-		E25FE360169DC05700A67EBE /* TFMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE35F169DC05700A67EBE /* TFMasterViewController.m */; };
-		E25FE363169DC05700A67EBE /* TFDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE362169DC05700A67EBE /* TFDetailViewController.m */; };
+		E25FE360169DC05700A67EBE /* TFExchangesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE35F169DC05700A67EBE /* TFExchangesViewController.m */; };
+		E25FE363169DC05700A67EBE /* TFSymbolDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE362169DC05700A67EBE /* TFSymbolDetailsViewController.m */; };
 		E25FE36B169DC05800A67EBE /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E25FE36A169DC05800A67EBE /* SenTestingKit.framework */; };
 		E25FE36C169DC05800A67EBE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E25FE33B169DC05700A67EBE /* UIKit.framework */; };
 		E25FE36D169DC05800A67EBE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E25FE33D169DC05700A67EBE /* Foundation.framework */; };
 		E25FE36E169DC05800A67EBE /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E25FE341169DC05700A67EBE /* CoreData.framework */; };
 		E25FE376169DC05800A67EBE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E25FE374169DC05800A67EBE /* InfoPlist.strings */; };
 		E25FE379169DC05800A67EBE /* CoreDataExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE378169DC05800A67EBE /* CoreDataExampleTests.m */; };
+		E25FE38E169DC79E00A67EBE /* URLValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE38D169DC79E00A67EBE /* URLValueTransformer.m */; };
+		E25FE391169DC8C800A67EBE /* TFExchange.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE390169DC8C800A67EBE /* TFExchange.m */; };
+		E25FE392169DC8C800A67EBE /* TFExchange.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE390169DC8C800A67EBE /* TFExchange.m */; };
+		E25FE395169DC8C800A67EBE /* TFSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE394169DC8C800A67EBE /* TFSymbol.m */; };
+		E25FE396169DC8C800A67EBE /* TFSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE394169DC8C800A67EBE /* TFSymbol.m */; };
+		E25FE39A169DCA3800A67EBE /* BadgedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE399169DCA3800A67EBE /* BadgedTableViewCell.m */; };
+		E25FE39D169DCA5700A67EBE /* BadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE39C169DCA5700A67EBE /* BadgeView.m */; };
+		E25FE3A0169DCA7D00A67EBE /* UIColor+Custom.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE39F169DCA7D00A67EBE /* UIColor+Custom.m */; };
+		E25FE3A3169DCD4500A67EBE /* TFSymbolsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3A2169DCD4500A67EBE /* TFSymbolsViewController.m */; };
+		E25FE3A6169DCD7C00A67EBE /* StockTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3A5169DCD7C00A67EBE /* StockTableViewCell.m */; };
+		E25FE3A9169DF52900A67EBE /* EditStringViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3A8169DF52800A67EBE /* EditStringViewController.m */; };
+		E25FE3AC169DF7CC00A67EBE /* StringInputTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3AB169DF7CC00A67EBE /* StringInputTableViewCell.m */; };
+		E25FE3B8169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3B7169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m */; };
+		E25FE3BB169E1A5200A67EBE /* TFAsynchronousURLLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3BA169E1A5200A67EBE /* TFAsynchronousURLLoader.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,16 +72,40 @@
 		E25FE356169DC05700A67EBE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		E25FE359169DC05700A67EBE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		E25FE35C169DC05700A67EBE /* CoreDataExample.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataExample.xcdatamodel; sourceTree = "<group>"; };
-		E25FE35E169DC05700A67EBE /* TFMasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TFMasterViewController.h; sourceTree = "<group>"; };
-		E25FE35F169DC05700A67EBE /* TFMasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TFMasterViewController.m; sourceTree = "<group>"; };
-		E25FE361169DC05700A67EBE /* TFDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TFDetailViewController.h; sourceTree = "<group>"; };
-		E25FE362169DC05700A67EBE /* TFDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TFDetailViewController.m; sourceTree = "<group>"; };
+		E25FE35E169DC05700A67EBE /* TFExchangesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TFExchangesViewController.h; sourceTree = "<group>"; };
+		E25FE35F169DC05700A67EBE /* TFExchangesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TFExchangesViewController.m; sourceTree = "<group>"; };
+		E25FE361169DC05700A67EBE /* TFSymbolDetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TFSymbolDetailsViewController.h; sourceTree = "<group>"; };
+		E25FE362169DC05700A67EBE /* TFSymbolDetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TFSymbolDetailsViewController.m; sourceTree = "<group>"; };
 		E25FE369169DC05800A67EBE /* CoreDataExampleTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreDataExampleTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E25FE36A169DC05800A67EBE /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		E25FE373169DC05800A67EBE /* CoreDataExampleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CoreDataExampleTests-Info.plist"; sourceTree = "<group>"; };
 		E25FE375169DC05800A67EBE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E25FE377169DC05800A67EBE /* CoreDataExampleTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreDataExampleTests.h; sourceTree = "<group>"; };
 		E25FE378169DC05800A67EBE /* CoreDataExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreDataExampleTests.m; sourceTree = "<group>"; };
+		E25FE38C169DC79E00A67EBE /* URLValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URLValueTransformer.h; sourceTree = "<group>"; };
+		E25FE38D169DC79E00A67EBE /* URLValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = URLValueTransformer.m; sourceTree = "<group>"; };
+		E25FE38F169DC8C800A67EBE /* TFExchange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFExchange.h; path = ManagedObjects/TFExchange.h; sourceTree = "<group>"; };
+		E25FE390169DC8C800A67EBE /* TFExchange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFExchange.m; path = ManagedObjects/TFExchange.m; sourceTree = "<group>"; };
+		E25FE393169DC8C800A67EBE /* TFSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFSymbol.h; path = ManagedObjects/TFSymbol.h; sourceTree = "<group>"; };
+		E25FE394169DC8C800A67EBE /* TFSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFSymbol.m; path = ManagedObjects/TFSymbol.m; sourceTree = "<group>"; };
+		E25FE398169DCA3800A67EBE /* BadgedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BadgedTableViewCell.h; sourceTree = "<group>"; };
+		E25FE399169DCA3800A67EBE /* BadgedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BadgedTableViewCell.m; sourceTree = "<group>"; };
+		E25FE39B169DCA5700A67EBE /* BadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BadgeView.h; sourceTree = "<group>"; };
+		E25FE39C169DCA5700A67EBE /* BadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BadgeView.m; sourceTree = "<group>"; };
+		E25FE39E169DCA7D00A67EBE /* UIColor+Custom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Custom.h"; sourceTree = "<group>"; };
+		E25FE39F169DCA7D00A67EBE /* UIColor+Custom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Custom.m"; sourceTree = "<group>"; };
+		E25FE3A1169DCD4400A67EBE /* TFSymbolsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFSymbolsViewController.h; sourceTree = "<group>"; };
+		E25FE3A2169DCD4500A67EBE /* TFSymbolsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFSymbolsViewController.m; sourceTree = "<group>"; };
+		E25FE3A4169DCD7C00A67EBE /* StockTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StockTableViewCell.h; sourceTree = "<group>"; };
+		E25FE3A5169DCD7C00A67EBE /* StockTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StockTableViewCell.m; sourceTree = "<group>"; };
+		E25FE3A7169DF52800A67EBE /* EditStringViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditStringViewController.h; sourceTree = "<group>"; };
+		E25FE3A8169DF52800A67EBE /* EditStringViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditStringViewController.m; sourceTree = "<group>"; };
+		E25FE3AA169DF7CB00A67EBE /* StringInputTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringInputTableViewCell.h; sourceTree = "<group>"; };
+		E25FE3AB169DF7CC00A67EBE /* StringInputTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringInputTableViewCell.m; sourceTree = "<group>"; };
+		E25FE3B6169E0F9A00A67EBE /* NSManagedObjectContext+SearchExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+SearchExtensions.h"; sourceTree = "<group>"; };
+		E25FE3B7169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+SearchExtensions.m"; sourceTree = "<group>"; };
+		E25FE3B9169E1A5200A67EBE /* TFAsynchronousURLLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFAsynchronousURLLoader.h; sourceTree = "<group>"; };
+		E25FE3BA169E1A5200A67EBE /* TFAsynchronousURLLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFAsynchronousURLLoader.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,12 +172,30 @@
 				E25FE34D169DC05700A67EBE /* TFAppDelegate.m */,
 				E25FE355169DC05700A67EBE /* MainStoryboard_iPhone.storyboard */,
 				E25FE358169DC05700A67EBE /* MainStoryboard_iPad.storyboard */,
-				E25FE35E169DC05700A67EBE /* TFMasterViewController.h */,
-				E25FE35F169DC05700A67EBE /* TFMasterViewController.m */,
-				E25FE361169DC05700A67EBE /* TFDetailViewController.h */,
-				E25FE362169DC05700A67EBE /* TFDetailViewController.m */,
+				E25FE35E169DC05700A67EBE /* TFExchangesViewController.h */,
+				E25FE35F169DC05700A67EBE /* TFExchangesViewController.m */,
+				E25FE3A1169DCD4400A67EBE /* TFSymbolsViewController.h */,
+				E25FE3A2169DCD4500A67EBE /* TFSymbolsViewController.m */,
+				E25FE361169DC05700A67EBE /* TFSymbolDetailsViewController.h */,
+				E25FE362169DC05700A67EBE /* TFSymbolDetailsViewController.m */,
+				E25FE3A4169DCD7C00A67EBE /* StockTableViewCell.h */,
+				E25FE3A5169DCD7C00A67EBE /* StockTableViewCell.m */,
+				E25FE38C169DC79E00A67EBE /* URLValueTransformer.h */,
+				E25FE38D169DC79E00A67EBE /* URLValueTransformer.m */,
+				E25FE398169DCA3800A67EBE /* BadgedTableViewCell.h */,
+				E25FE399169DCA3800A67EBE /* BadgedTableViewCell.m */,
+				E25FE39B169DCA5700A67EBE /* BadgeView.h */,
+				E25FE39C169DCA5700A67EBE /* BadgeView.m */,
+				E25FE39E169DCA7D00A67EBE /* UIColor+Custom.h */,
+				E25FE39F169DCA7D00A67EBE /* UIColor+Custom.m */,
+				E25FE3B6169E0F9A00A67EBE /* NSManagedObjectContext+SearchExtensions.h */,
+				E25FE3B7169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m */,
+				E25FE3AD169DF7D200A67EBE /* String Input ViewController */,
 				E25FE35B169DC05700A67EBE /* CoreDataExample.xcdatamodeld */,
+				E25FE397169DC8D100A67EBE /* Managed Objects */,
 				E25FE344169DC05700A67EBE /* Supporting Files */,
+				E25FE3B9169E1A5200A67EBE /* TFAsynchronousURLLoader.h */,
+				E25FE3BA169E1A5200A67EBE /* TFAsynchronousURLLoader.m */,
 			);
 			path = CoreDataExample;
 			sourceTree = "<group>";
@@ -175,6 +231,28 @@
 				E25FE374169DC05800A67EBE /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E25FE397169DC8D100A67EBE /* Managed Objects */ = {
+			isa = PBXGroup;
+			children = (
+				E25FE393169DC8C800A67EBE /* TFSymbol.h */,
+				E25FE394169DC8C800A67EBE /* TFSymbol.m */,
+				E25FE38F169DC8C800A67EBE /* TFExchange.h */,
+				E25FE390169DC8C800A67EBE /* TFExchange.m */,
+			);
+			name = "Managed Objects";
+			sourceTree = "<group>";
+		};
+		E25FE3AD169DF7D200A67EBE /* String Input ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				E25FE3A7169DF52800A67EBE /* EditStringViewController.h */,
+				E25FE3A8169DF52800A67EBE /* EditStringViewController.m */,
+				E25FE3AA169DF7CB00A67EBE /* StringInputTableViewCell.h */,
+				E25FE3AB169DF7CC00A67EBE /* StringInputTableViewCell.m */,
+			);
+			name = "String Input ViewController";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -292,8 +370,20 @@
 				E25FE34A169DC05700A67EBE /* main.m in Sources */,
 				E25FE34E169DC05700A67EBE /* TFAppDelegate.m in Sources */,
 				E25FE35D169DC05700A67EBE /* CoreDataExample.xcdatamodeld in Sources */,
-				E25FE360169DC05700A67EBE /* TFMasterViewController.m in Sources */,
-				E25FE363169DC05700A67EBE /* TFDetailViewController.m in Sources */,
+				E25FE360169DC05700A67EBE /* TFExchangesViewController.m in Sources */,
+				E25FE363169DC05700A67EBE /* TFSymbolDetailsViewController.m in Sources */,
+				E25FE38E169DC79E00A67EBE /* URLValueTransformer.m in Sources */,
+				E25FE391169DC8C800A67EBE /* TFExchange.m in Sources */,
+				E25FE395169DC8C800A67EBE /* TFSymbol.m in Sources */,
+				E25FE39A169DCA3800A67EBE /* BadgedTableViewCell.m in Sources */,
+				E25FE39D169DCA5700A67EBE /* BadgeView.m in Sources */,
+				E25FE3A0169DCA7D00A67EBE /* UIColor+Custom.m in Sources */,
+				E25FE3A3169DCD4500A67EBE /* TFSymbolsViewController.m in Sources */,
+				E25FE3A6169DCD7C00A67EBE /* StockTableViewCell.m in Sources */,
+				E25FE3A9169DF52900A67EBE /* EditStringViewController.m in Sources */,
+				E25FE3AC169DF7CC00A67EBE /* StringInputTableViewCell.m in Sources */,
+				E25FE3B8169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m in Sources */,
+				E25FE3BB169E1A5200A67EBE /* TFAsynchronousURLLoader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +392,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E25FE379169DC05800A67EBE /* CoreDataExampleTests.m in Sources */,
+				E25FE392169DC8C800A67EBE /* TFExchange.m in Sources */,
+				E25FE396169DC8C800A67EBE /* TFSymbol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -478,6 +570,7 @@
 				E25FE37E169DC05800A67EBE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E25FE37F169DC05800A67EBE /* Build configuration list for PBXNativeTarget "CoreDataExampleTests" */ = {
 			isa = XCConfigurationList;
@@ -486,6 +579,7 @@
 				E25FE381169DC05800A67EBE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

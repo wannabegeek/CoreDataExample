@@ -6,15 +6,18 @@
 //  Copyright (c) 2013 Tom Fewster. All rights reserved.
 //
 
-#import "TFMasterViewController.h"
+#import "TFExchangesViewController.h"
 
-#import "TFDetailViewController.h"
+#import "BadgedTableViewCell.h"
+#import "TFExchange.h"
+#import "EditStringViewController.h"
+#import "TFSymbolsViewController.h"
 
-@interface TFMasterViewController ()
+@interface TFExchangesViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
-@implementation TFMasterViewController
+@implementation TFExchangesViewController
 
 - (void)awakeFromNib
 {
@@ -29,11 +32,11 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-	self.navigationItem.leftBarButtonItem = self.editButtonItem;
+	self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
-	UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-	self.navigationItem.rightBarButtonItem = addButton;
-	self.detailViewController = (TFDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+	UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addExchange:)];
+	self.navigationItem.leftBarButtonItem = addButton;
+	self.detailViewController = (TFSymbolDetailsViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
 - (void)didReceiveMemoryWarning
@@ -42,24 +45,8 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)insertNewObject:(id)sender
-{
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-    
-    // If appropriate, configure the new managed object.
-    // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-    [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
-    
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-         // Replace this implementation with code to handle the error appropriately.
-         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
+- (void)addExchange:(id)sender {
+	[self performSegueWithIdentifier:@"addExchange" sender:self];
 }
 
 #pragma mark - Table View
@@ -77,7 +64,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    BadgedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
@@ -113,18 +100,43 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        self.detailViewController.detailItem = object;
-    }
+        TFExchange *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+//        self.detailViewController.exchange = object;
+    } else {
+		[self performSegueWithIdentifier:@"viewSymbols" sender:self];
+	}
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
+    if ([[segue identifier] isEqualToString:@"viewSymbols"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        [[segue destinationViewController] setDetailItem:object];
-    }
+        TFExchange *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+		TFSymbolsViewController *viewController = segue.destinationViewController;
+		viewController.exchange = object;
+    } else if ([[segue identifier] isEqualToString:@"addExchange"]) {
+		EditStringViewController *viewController = segue.destinationViewController;
+		viewController.completionHandler = ^(BOOL success, NSString *result) {
+			if (success) {
+				NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+				NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+				NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+
+				// If appropriate, configure the new managed object.
+				// Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
+				[newManagedObject setValue:result forKey:@"mnemonic"];
+
+				// Save the context.
+				NSError *error = nil;
+				if (![context save:&error]) {
+					// Replace this implementation with code to handle the error appropriately.
+					// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+					NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+					abort();
+				}
+			}
+		};
+	}
 }
 
 #pragma mark - Fetched results controller
@@ -137,14 +149,14 @@
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"TFExchange" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"mnemonic" ascending:NO];
     NSArray *sortDescriptors = @[sortDescriptor];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
@@ -226,10 +238,12 @@
 }
  */
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(BadgedTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
+    TFExchange *exchange = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = exchange.mnemonic;
+	cell.badgeNumber = [exchange.symbols count];
+	
 }
 
 @end
