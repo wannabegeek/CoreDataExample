@@ -10,11 +10,17 @@
 
 #import "TFExchangesViewController.h"
 
+@interface TFAppDelegate ()
+@property (readwrite) BOOL requiresSeeding;
+@end
+
 @implementation TFAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+
+@synthesize requiresSeeding = _requiresSeeding;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -32,6 +38,13 @@
 	    TFExchangesViewController *controller = (TFExchangesViewController *)navigationController.topViewController;
 	    controller.managedObjectContext = self.managedObjectContext;
 	}
+
+	// due to this beeing after the view controller initilaisation (above) the core data store should have already been
+	// initilised, therefore we will know are required to prepopulate the store with data
+	if (_requiresSeeding) {
+		[self seedCoreDataStore];
+	}
+
     return YES;
 }
 							
@@ -69,12 +82,51 @@
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     if (managedObjectContext != nil) {
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-             // Replace this implementation with code to handle the error appropriately.
-             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        } 
+			NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+			NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+			if(detailedErrors != nil && [detailedErrors count] > 0) {
+				for(NSError* detailedError in detailedErrors) {
+					NSLog(@"  DetailedError: %@", [detailedError userInfo]);
+				}
+			}else {
+				NSLog(@"  %@", [error userInfo]);
+			}
+        }
     }
+}
+
+- (void)seedCoreDataStore {
+	NSURL *url = [[NSBundle mainBundle] URLForResource:@"CoreDataSeed" withExtension:@"plist"];
+
+	if (url) {
+		NSManagedObjectContext *seedContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+		seedContext.parentContext = self.managedObjectContext;
+
+		[seedContext performBlock:^{
+			NSDictionary *seedData = [NSDictionary dictionaryWithContentsOfURL:url];
+			for (NSString *exchange in seedData) {
+				NSManagedObject *newExchange = [NSEntityDescription insertNewObjectForEntityForName:@"TFExchange" inManagedObjectContext:seedContext];
+				[newExchange setValue:exchange forKey:@"mnemonic"];
+
+				NSMutableSet *symbols = [newExchange mutableSetValueForKey:@"symbols"];
+				for (NSString *symbol in [seedData valueForKey:exchange]) {
+					NSManagedObject *newSymbol = [NSEntityDescription insertNewObjectForEntityForName:@"TFSymbol" inManagedObjectContext:seedContext];
+					[newSymbol setValue:symbol forKey:@"ticker"];
+					[symbols addObject:newSymbol];
+				}
+			}
+
+			NSError *error = nil;
+			if (![seedContext save:&error]) {
+				NSLog(@"Failed to seed core data store: %@", error);
+			} else {
+				// we also need to make sure our changes are persisted, so save the main context too.
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[self saveContext];
+				});
+			}
+		}];
+	}
 }
 
 #pragma mark - Core Data stack
@@ -89,7 +141,7 @@
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        _managedObjectContext = [[NSManagedObjectContext alloc] init];
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     }
     return _managedObjectContext;
@@ -116,7 +168,11 @@
     }
     
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"CoreDataExample.sqlite"];
-    
+
+	if (![[[NSFileManager alloc] init] fileExistsAtPath:[storeURL path]]) {
+		_requiresSeeding = YES;
+	}
+
     NSError *error = nil;
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {

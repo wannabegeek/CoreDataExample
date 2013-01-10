@@ -9,11 +9,15 @@
 #import "TFSymbolDetailsViewController.h"
 #import "TFSymbol.h"
 #import "TFAsynchronousURLLoader.h"
+#import "TFPriceMoveColourValueTransformer.h"
+
 
 @interface TFSymbolDetailsViewController () {
 	NSNumberFormatter *priceFormatter;
 	NSNumberFormatter *changeFormatter;
 	id coreDataObserver;
+	TFPriceMoveColourValueTransformer *priceColorTransformer;
+	NSURLConnection *graphImageLoader;
 }
 
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
@@ -35,20 +39,18 @@
 
 #pragma mark - Managing the detail item
 
-- (void)setSymbol:(TFSymbol *)symbol
-{
+- (void)setSymbol:(TFSymbol *)symbol {
     if (_symbol != symbol) {
         _symbol = symbol;
-        
-        // Update the view.
         [self configureView];
 
+		// If we are updating or symbol, we will need to remove out current notification & re-add
 		if (coreDataObserver) {
 			[[NSNotificationCenter defaultCenter] removeObserver:coreDataObserver];
 			coreDataObserver = nil;
 		}
 		coreDataObserver = [[NSNotificationCenter defaultCenter] addObserverForName:NSManagedObjectContextObjectsDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-			if ([[note valueForKey:NSUpdatedObjectsKey] containsObject:_symbol]) {
+			if ([[[note userInfo] valueForKey:NSUpdatedObjectsKey] containsObject:_symbol]) {
 				[self configureView];
 			}
 		}];
@@ -69,22 +71,23 @@
 		[[NSNotificationCenter defaultCenter] removeObserver:coreDataObserver];
 		coreDataObserver = nil;
 	}
+	// cancel any pending graph image requests
+	[graphImageLoader cancel];
 }
 
-- (void)configureView
-{
-    // Update the user interface for the detail item.
-
+- (void)configureView {
 	if (_symbol) {
 		_tickerLabel.text = _symbol.ticker;
 		_companyLabel.text = _symbol.company;
 		_priceLabel.text = [NSString stringWithFormat:@"%@ (%@)", [priceFormatter stringFromNumber:_symbol.price], [changeFormatter stringFromNumber:_symbol.change]];
+		_priceLabel.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:_symbol.priceChange]];
 		_highLabel.text = [priceFormatter stringFromNumber:_symbol.high];
 		_lowLabel.text = [priceFormatter stringFromNumber:_symbol.low];
 		_volumeLabel.text = [priceFormatter stringFromNumber:_symbol.volume];
 
+		// This isn't very nice we will reload the graph image every time we receive any sort or update
 		TFAsynchronousURLLoader *loader = [[TFAsynchronousURLLoader alloc] init];
-		[loader asynchonouslLoadDataFromURL:_symbol.chartURL completionHander:^(BOOL success, NSData *value) {
+		graphImageLoader = [loader asynchonouslLoadDataFromURL:_symbol.chartURL completionHander:^(BOOL success, NSData *value) {
 			if (success) {
 				_graphImageView.image = [UIImage imageWithData:value];
 			}
@@ -92,8 +95,13 @@
 	}
 }
 
-- (void)viewDidLoad
-{
+- (void)refresh:(id)sender {
+	if (_symbol) {
+		[_symbol requestQuote];
+	}
+}
+
+- (void)viewDidLoad {
     [super viewDidLoad];
 
 	priceFormatter = [[NSNumberFormatter alloc] init];
@@ -110,27 +118,28 @@
 	[changeFormatter setMaximumFractionDigits:2];
 	[changeFormatter setNilSymbol:@"--"];
 
-	// Do any additional setup after loading the view, typically from a nib.
+	priceColorTransformer = [[TFPriceMoveColourValueTransformer alloc] init];
+
 	[self configureView];
+
+	UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh:)];
+	self.navigationItem.rightBarButtonItem = refreshButton;
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Split view
 
-- (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
-{
+- (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController {
     barButtonItem.title = NSLocalizedString(@"Master", @"Master");
     [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
     self.masterPopoverController = popoverController;
 }
 
-- (void)splitViewController:(UISplitViewController *)splitController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
-{
+- (void)splitViewController:(UISplitViewController *)splitController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem {
     // Called when the view is shown again in the split view, invalidating the button and popover controller.
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
     self.masterPopoverController = nil;

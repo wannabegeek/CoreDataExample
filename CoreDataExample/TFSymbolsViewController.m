@@ -13,14 +13,18 @@
 #import "TFSymbolDetailsViewController.h"
 
 #import "StockTableViewCell.h"
+#import "TFPriceMoveColourValueTransformer.h"
 
 @interface TFSymbolsViewController () {
 	NSNumberFormatter *priceFormatter;
 	NSNumberFormatter *changeFormatter;
+	TFPriceMoveColourValueTransformer *priceColorTransformer;
 }
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
+@property (strong) NSPredicate *basePredicate;
 
 @end
 
@@ -30,9 +34,9 @@
 //@synthesize managedObjectContext = _managedObjectContext;
 
 @synthesize  exchange = _exchange;
+@synthesize basePredicate = _basePredicate;
 
-- (void)awakeFromNib
-{
+- (void)awakeFromNib {
 	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
 	    self.clearsSelectionOnViewWillAppear = NO;
 	    self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
@@ -54,11 +58,12 @@
 	[changeFormatter setMaximumFractionDigits:2];
 	[changeFormatter setNilSymbol:@"--"];
 
+	priceColorTransformer = [[TFPriceMoveColourValueTransformer alloc] init];
+
     [super awakeFromNib];
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 	self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -68,18 +73,17 @@
 	self.title = _exchange.mnemonic;
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)setExchange:(TFExchange *)exchange {
 	_exchange = exchange;
-	// since our exchange has changed, we need to reload out fetched results controller
+
+	// since our exchange has changed, we need to reload out fetched results controller with a new predicate
+	_basePredicate = [NSPredicate predicateWithFormat:@"self.listingExchange = %@", _exchange];
 	_fetchedResultsController = nil;
 
-	// thsi will recreate out results controll and re-fetch our managed objects
 	NSError *error = nil;
 	[[self fetchedResultsController] performFetch:&error];
 	if (error) {
@@ -108,32 +112,27 @@
 
 #pragma mark - Table View
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return [[self.fetchedResultsController sections] count];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
 	return [sectionInfo numberOfObjects];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    StockTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"StockTicker" forIndexPath:indexPath];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    StockTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"StockTicker" forIndexPath:indexPath];
 	[self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
     return YES;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
@@ -148,14 +147,12 @@
     }
 }
 
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     // The table view should not be re-orderable.
     return NO;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (!self.editing) {
 		if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
 			NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
@@ -305,8 +302,35 @@
     cell.ticker.text = symbol.ticker;
     cell.companyName.text = symbol.company;
     cell.price.text = [priceFormatter stringFromNumber:symbol.price];
+	cell.price.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:symbol.priceChange]];
     cell.change.text = [changeFormatter stringFromNumber:symbol.change];
-
+	cell.change.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:symbol.priceChange]];
 }
+
+#pragma mark - Search Bar delegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self.ticker contains[cd] %@", searchText];
+
+	self.fetchedResultsController.fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[_basePredicate, predicate]];
+
+	NSError *error = nil;
+	[[self fetchedResultsController] performFetch:&error];
+	if (error) {
+		NSLog(@"Error Occoured: %@", error);
+	}
+}
+
+- (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
+	self.fetchedResultsController.fetchRequest.predicate = _basePredicate;
+	NSError *error = nil;
+	[[self fetchedResultsController] performFetch:&error];
+	if (error) {
+		NSLog(@"Error Occoured: %@", error);
+	}
+
+    return;
+}
+
 
 @end

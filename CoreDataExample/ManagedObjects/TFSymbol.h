@@ -11,6 +11,12 @@
 
 @class TFExchange;
 
+typedef enum {
+	kTFPriceUp = -1,
+	kTFPriceNoChange = 0,
+	kTFPriceDown = 1
+} kTFSymolPriceMove;
+
 @interface TFSymbol : NSManagedObject <NSXMLParserDelegate, NSURLConnectionDelegate>
 
 @property (nonatomic, retain) NSDate * lastUpdate;
@@ -24,4 +30,6 @@
 @property (nonatomic, retain) NSNumber * change;
 @property (nonatomic, retain) TFExchange *listingExchange;
 
+@property (readonly) kTFSymolPriceMove priceChange;
+- (void)requestQuote;
 @end

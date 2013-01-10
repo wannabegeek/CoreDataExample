@@ -31,6 +31,10 @@
 @synthesize connection = _connection;
 @synthesize receiveCache = _receiveCache;
 
++ (NSSet *)keyPathsForValuesAffectingPriceChange {
+	return [NSSet setWithObject:@"change"];
+}
+
 - (void)awakeFromFetch {
 	[super awakeFromFetch];
 	[self requestQuote];
@@ -63,16 +67,30 @@
 // Non CoreData specific methods
 ////////////////
 
+- (kTFSymolPriceMove)priceChange {
+	if ([self.change doubleValue] > 0) {
+		return kTFPriceUp;
+	} else if ([self.change doubleValue] < 0) {
+		return kTFPriceDown;
+	}
+
+	return kTFPriceNoChange;
+}
+
 
 - (void)requestQuote {
-	_receiveCache = [NSMutableData data];
-	NSString *urlString = [NSString stringWithFormat:@"http://www.google.com/ig/api?stock=%@", self.ticker];
-	NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval:60];
-
-	_connection=[[NSURLConnection alloc] initWithRequest:request delegate:self];
 	if (_connection) {
-		NSLog(@"Connection failed");
+		NSLog(@"Already have an outstanding request");
+	} else {
+		_receiveCache = [NSMutableData data];
+		NSString *urlString = [NSString stringWithFormat:@"http://www.google.com/ig/api?stock=%@", self.ticker];
+		NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+		NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval:60];
+
+		_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+		if (!_connection) {
+			NSLog(@"Connection failed");
+		}
 	}
 }
 
@@ -97,6 +115,7 @@
 	NSXMLParser * parser = [[NSXMLParser alloc] initWithData:_receiveCache];
 	[parser setDelegate:self];
 	[parser parse];
+	_connection = nil;
 }
 
 #pragma mark - NSXMLParserDelegate Methods

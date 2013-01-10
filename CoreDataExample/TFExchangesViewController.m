@@ -120,11 +120,8 @@
 			if (success) {
 				NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
 				NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-				NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-
-				// If appropriate, configure the new managed object.
-				// Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-				[newManagedObject setValue:result forKey:@"mnemonic"];
+				TFExchange *exchange = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+				exchange.mnemonic = result;
 
 				// Save the context.
 				NSError *error = nil;
@@ -199,8 +196,7 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath
-{
+      newIndexPath:(NSIndexPath *)newIndexPath {
     UITableView *tableView = self.tableView;
     
     switch(type) {
@@ -223,23 +219,11 @@
     }
 }
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     [self.tableView endUpdates];
 }
 
-/*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
- 
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
- */
-
-- (void)configureCell:(BadgedTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
+- (void)configureCell:(BadgedTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     TFExchange *exchange = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = exchange.mnemonic;
 	cell.badgeNumber = [exchange.symbols count];

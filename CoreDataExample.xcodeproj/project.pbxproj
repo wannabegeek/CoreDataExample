@@ -42,6 +42,8 @@
 		E25FE3AC169DF7CC00A67EBE /* StringInputTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3AB169DF7CC00A67EBE /* StringInputTableViewCell.m */; };
 		E25FE3B8169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3B7169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m */; };
 		E25FE3BB169E1A5200A67EBE /* TFAsynchronousURLLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3BA169E1A5200A67EBE /* TFAsynchronousURLLoader.m */; };
+		E25FE3BE169E207F00A67EBE /* TFPriceMoveColourValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3BD169E207E00A67EBE /* TFPriceMoveColourValueTransformer.m */; };
+		E25FE3C4169EA93500A67EBE /* CoreDataSeed.plist in Resources */ = {isa = PBXBuildFile; fileRef = E25FE3C3169EA93500A67EBE /* CoreDataSeed.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +108,9 @@
 		E25FE3B7169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+SearchExtensions.m"; sourceTree = "<group>"; };
 		E25FE3B9169E1A5200A67EBE /* TFAsynchronousURLLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFAsynchronousURLLoader.h; sourceTree = "<group>"; };
 		E25FE3BA169E1A5200A67EBE /* TFAsynchronousURLLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFAsynchronousURLLoader.m; sourceTree = "<group>"; };
+		E25FE3BC169E207E00A67EBE /* TFPriceMoveColourValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFPriceMoveColourValueTransformer.h; sourceTree = "<group>"; };
+		E25FE3BD169E207E00A67EBE /* TFPriceMoveColourValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFPriceMoveColourValueTransformer.m; sourceTree = "<group>"; };
+		E25FE3C3169EA93500A67EBE /* CoreDataSeed.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CoreDataSeed.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +187,8 @@
 				E25FE3A5169DCD7C00A67EBE /* StockTableViewCell.m */,
 				E25FE38C169DC79E00A67EBE /* URLValueTransformer.h */,
 				E25FE38D169DC79E00A67EBE /* URLValueTransformer.m */,
+				E25FE3BC169E207E00A67EBE /* TFPriceMoveColourValueTransformer.h */,
+				E25FE3BD169E207E00A67EBE /* TFPriceMoveColourValueTransformer.m */,
 				E25FE398169DCA3800A67EBE /* BadgedTableViewCell.h */,
 				E25FE399169DCA3800A67EBE /* BadgedTableViewCell.m */,
 				E25FE39B169DCA5700A67EBE /* BadgeView.h */,
@@ -210,6 +217,7 @@
 				E25FE34F169DC05700A67EBE /* Default.png */,
 				E25FE351169DC05700A67EBE /* Default@2x.png */,
 				E25FE353169DC05700A67EBE /* Default-568h@2x.png */,
+				E25FE3C3169EA93500A67EBE /* CoreDataSeed.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -333,6 +341,7 @@
 				E25FE354169DC05700A67EBE /* Default-568h@2x.png in Resources */,
 				E25FE357169DC05700A67EBE /* MainStoryboard_iPhone.storyboard in Resources */,
 				E25FE35A169DC05700A67EBE /* MainStoryboard_iPad.storyboard in Resources */,
+				E25FE3C4169EA93500A67EBE /* CoreDataSeed.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +393,7 @@
 				E25FE3AC169DF7CC00A67EBE /* StringInputTableViewCell.m in Sources */,
 				E25FE3B8169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m in Sources */,
 				E25FE3BB169E1A5200A67EBE /* TFAsynchronousURLLoader.m in Sources */,
+				E25FE3BE169E207F00A67EBE /* TFPriceMoveColourValueTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
