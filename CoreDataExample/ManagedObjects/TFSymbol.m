@@ -30,6 +30,7 @@
 
 @synthesize connection = _connection;
 @synthesize receiveCache = _receiveCache;
+@synthesize refreshInProgress = _refreshInProgress;
 
 + (NSSet *)keyPathsForValuesAffectingPriceChange {
 	return [NSSet setWithObject:@"change"];
@@ -46,13 +47,21 @@
 //	[self requestQuote];
 //}
 
+- (void)awakeFromSnapshotEvents:(NSSnapshotEventType)flags {
+	// We should reall check why we are being called here.
+	// But I'm making the assumption it is either because of undo a refesh request, or a merge back to the main context
+	// in either situation, we probably want to cancel any outstanding request if there are any
+	// and re-request with the new details (i.e the symbol could have changed)
+	[self cancelOutstandingRequests];
+	[self requestQuote];
+}
+
+
 - (void)willTurnIntoFault {
 	[super willTurnIntoFault];
 
-	// since we are about to fault, we need to release cancel any out stnding requests
-	if (_connection) {
-		[_connection cancel];
-	}
+	// since we are about to fault, we need to release cancel any outstnding connection requests
+	[self cancelOutstandingRequests];
 }
 
 - (void)setTicker:(NSString *)ticker {
@@ -82,15 +91,30 @@
 	if (_connection) {
 		NSLog(@"Already have an outstanding request");
 	} else {
-		_receiveCache = [NSMutableData data];
-		NSString *urlString = [NSString stringWithFormat:@"http://www.google.com/ig/api?stock=%@", self.ticker];
-		NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-		NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval:60];
+			_receiveCache = [NSMutableData data];
+			NSString *urlString = [NSString stringWithFormat:@"http://www.google.com/ig/api?stock=%@", self.ticker];
+			NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLCacheStorageNotAllowed timeoutInterval:60];
 
-		_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-		if (!_connection) {
-			NSLog(@"Connection failed");
-		}
+			_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+			if (!_connection) {
+				NSLog(@"Connection failed");
+			} else {
+				[self willChangeValueForKey:@"refreshInProgress"];
+				_refreshInProgress = YES;
+				[self didChangeValueForKey:@"refreshInProgress"];
+			}
+	}
+}
+
+- (void)cancelOutstandingRequests {
+	if (_connection) {
+		[_connection cancel];
+		_connection = nil;
+
+		[self willChangeValueForKey:@"refreshInProgress"];
+		_refreshInProgress = NO;
+		[self didChangeValueForKey:@"refreshInProgress"];
 	}
 }
 
@@ -98,11 +122,11 @@
 #pragma mark - NSURLConnectionDelegate
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    [_receiveCache setLength:0];
+	[_receiveCache setLength:0];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [_receiveCache appendData:data];
+	[_receiveCache appendData:data];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
@@ -113,6 +137,9 @@
     NSLog(@"Succeeded! Received %d bytes of data", [_receiveCache length]);
 
 	NSXMLParser * parser = [[NSXMLParser alloc] initWithData:_receiveCache];
+	[self willChangeValueForKey:@"refreshInProgress"];
+	_refreshInProgress = NO;
+	[self didChangeValueForKey:@"refreshInProgress"];
 	[parser setDelegate:self];
 	[parser parse];
 	_connection = nil;
@@ -125,24 +152,31 @@
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qualifiedName attributes:(NSDictionary *)attributeDict {
+
+	NSMutableDictionary *changeDictionary = [NSMutableDictionary dictionaryWithCapacity:7];
+
 	if ([elementName isEqualToString:@"symbol"]) {
 //		NSString *symbol = [attributeDict valueForKey:@"data"];
 	} else if ([elementName isEqualToString:@"company"]) {
-		self.company = [attributeDict valueForKey:@"data"];
+		[changeDictionary setObject:[attributeDict valueForKey:@"data"] forKey:@"company"];
 	} else if ([elementName isEqualToString:@"last"]) {
-		self.price = [NSNumber numberWithDouble:[[attributeDict valueForKey:@"data"] doubleValue]];
+		[changeDictionary setObject:[NSNumber numberWithDouble:[[attributeDict valueForKey:@"data"] doubleValue]] forKey:@"price"];
 	} else if ([elementName isEqualToString:@"high"]) {
-		self.high = [NSNumber numberWithDouble:[[attributeDict valueForKey:@"data"] doubleValue]];
+		[changeDictionary setObject:[NSNumber numberWithDouble:[[attributeDict valueForKey:@"data"] doubleValue]] forKey:@"high"];
 	} else if ([elementName isEqualToString:@"low"]) {
-		self.low = [NSNumber numberWithDouble:[[attributeDict valueForKey:@"data"] doubleValue]];
+		[changeDictionary setObject:[NSNumber numberWithDouble:[[attributeDict valueForKey:@"data"] doubleValue]] forKey:@"low"];
 	} else if ([elementName isEqualToString:@"volume"]) {
-		self.volume = [NSNumber numberWithDouble:[[attributeDict valueForKey:@"data"] doubleValue]];
+		[changeDictionary setObject:[NSNumber numberWithDouble:[[attributeDict valueForKey:@"data"] doubleValue]] forKey:@"volume"];
 	} else if ([elementName isEqualToString:@"change"]) {
-		self.change = [NSNumber numberWithDouble:[[attributeDict valueForKey:@"data"] doubleValue]];
+		[changeDictionary setObject:[NSNumber numberWithDouble:[[attributeDict valueForKey:@"data"] doubleValue]] forKey:@"change"];
 	} else if ([elementName isEqualToString:@"chart_url"]) {
 		NSURL *url = [NSURL URLWithString:[@"http://www.google.com" stringByAppendingString:[attributeDict valueForKey:@"data"]]];
-		self.chartURL = url;
+		[changeDictionary setObject:url forKey:@"chartURL"];
 	}
+
+	[self.managedObjectContext performBlockAndWait:^{
+		[self setValuesForKeysWithDictionary:changeDictionary];
+	}];
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {

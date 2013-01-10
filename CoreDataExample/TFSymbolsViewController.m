@@ -49,9 +49,6 @@
 	[priceFormatter setNilSymbol:@"--"];
 
 	changeFormatter = [[NSNumberFormatter alloc] init];
-	changeFormatter.positivePrefix = @"(";
-	changeFormatter.negativeSuffix = @"(-";
-	changeFormatter.positiveSuffix = @")%";
 	changeFormatter.negativeSuffix = changeFormatter.positiveSuffix;
 	[changeFormatter setMinimumIntegerDigits:1];
 	[changeFormatter setMinimumFractionDigits:2];
@@ -153,10 +150,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	if (!self.editing) {
+	TFSymbol *symbol = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+	if (!self.editing && !symbol.refreshInProgress) {
 		if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-			NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-//			self.detailViewController.exchange = object;
+//			self.detailViewController.exchange = symbol;
 		} else {
 			[self performSegueWithIdentifier:@"viewDetails" sender:self];
 		}
@@ -303,8 +300,17 @@
     cell.companyName.text = symbol.company;
     cell.price.text = [priceFormatter stringFromNumber:symbol.price];
 	cell.price.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:symbol.priceChange]];
-    cell.change.text = [changeFormatter stringFromNumber:symbol.change];
+    cell.change.text = [NSString stringWithFormat:@"(%@)", [changeFormatter stringFromNumber:symbol.change]];
 	cell.change.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:symbol.priceChange]];
+
+	if (symbol.refreshInProgress) {
+		UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+		activityIndicator.frame = CGRectMake(0.0, 0.0, 24.0, 24.0);
+		[activityIndicator startAnimating];
+		cell.accessoryView = activityIndicator;
+	} else {
+		cell.accessoryView = nil;
+	}
 }
 
 #pragma mark - Search Bar delegate

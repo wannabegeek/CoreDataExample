@@ -7,65 +7,13 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "CoreDataExample/ManagedObjects/TFSymbol.m"
-         timestampString = "379502555.289863"
+         filePath = "CoreDataExample/TFSymbolDetailsViewController.m"
+         timestampString = "379515589.724919"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "144"
-         endingLineNumber = "144"
-         landmarkName = "-parser:didStartElement:namespaceURI:qualifiedName:attributes:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "CoreDataExample/ManagedObjects/TFSymbol.m"
-         timestampString = "379502510.053406"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "101"
-         endingLineNumber = "101"
-         landmarkName = "-connection:didReceiveResponse:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "CoreDataExample/ManagedObjects/TFSymbol.m"
-         timestampString = "379502511.020867"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "105"
-         endingLineNumber = "105"
-         landmarkName = "-connection:didReceiveData:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "CoreDataExample/ManagedObjects/TFSymbol.m"
-         timestampString = "379502512.576039"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "109"
-         endingLineNumber = "109"
-         landmarkName = "-connection:didFailWithError:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "CoreDataExample/ManagedObjects/TFSymbol.m"
-         timestampString = "379502513.552624"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "113"
-         endingLineNumber = "113"
-         landmarkName = "-connectionDidFinishLoading:"
+         startingLineNumber = "53"
+         endingLineNumber = "53"
+         landmarkName = "-setSymbol:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
