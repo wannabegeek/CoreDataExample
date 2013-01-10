@@ -11,6 +11,7 @@
 #import "TFSymbol.h"
 #import "EditStringViewController.h"
 #import "TFSymbolDetailsViewController.h"
+#import "UIColor+Custom.h"
 
 #import "StockTableViewCell.h"
 #import "TFPriceMoveColourValueTransformer.h"
@@ -107,6 +108,32 @@
 	[self.navigationController setToolbarHidden:!editing animated:animated];
 }
 
+- (void)configureCell:(StockTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    TFSymbol *symbol = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.ticker.text = symbol.ticker;
+    cell.companyName.text = symbol.company;
+    cell.price.text = [priceFormatter stringFromNumber:symbol.price];
+	cell.price.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:symbol.priceChange]];
+    cell.change.text = [NSString stringWithFormat:@"(%@)", [changeFormatter stringFromNumber:symbol.change]];
+	cell.change.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:symbol.priceChange]];
+
+	if ([symbol.isValid boolValue]) {
+		cell.companyName.textColor = [UIColor grayColor];
+	} else {
+		cell.companyName.textColor = [UIColor redColor];
+	}
+
+	if (symbol.refreshInProgress) {
+		UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+		activityIndicator.frame = CGRectMake(0.0, 0.0, 24.0, 24.0);
+		[activityIndicator startAnimating];
+		cell.accessoryView = activityIndicator;
+	} else {
+		cell.accessoryView = nil;
+	}
+}
+
+
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -152,10 +179,12 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	TFSymbol *symbol = [[self fetchedResultsController] objectAtIndexPath:indexPath];
 	if (!self.editing && !symbol.refreshInProgress) {
-		if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+		if ([symbol.isValid boolValue]) {
+			if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
 //			self.detailViewController.exchange = symbol;
-		} else {
-			[self performSegueWithIdentifier:@"viewDetails" sender:self];
+			} else {
+				[self performSegueWithIdentifier:@"viewDetails" sender:self];
+			}
 		}
 	}
 }
@@ -281,36 +310,6 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView endUpdates];
-}
-
-/*
- // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
-
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
- {
- // In the simplest, most efficient, case, reload the table view.
- [self.tableView reloadData];
- }
- */
-
-- (void)configureCell:(StockTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    TFSymbol *symbol = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.ticker.text = symbol.ticker;
-    cell.companyName.text = symbol.company;
-    cell.price.text = [priceFormatter stringFromNumber:symbol.price];
-	cell.price.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:symbol.priceChange]];
-    cell.change.text = [NSString stringWithFormat:@"(%@)", [changeFormatter stringFromNumber:symbol.change]];
-	cell.change.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:symbol.priceChange]];
-
-	if (symbol.refreshInProgress) {
-		UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-		activityIndicator.frame = CGRectMake(0.0, 0.0, 24.0, 24.0);
-		[activityIndicator startAnimating];
-		cell.accessoryView = activityIndicator;
-	} else {
-		cell.accessoryView = nil;
-	}
 }
 
 #pragma mark - Search Bar delegate

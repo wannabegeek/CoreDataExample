@@ -28,6 +28,7 @@ typedef enum {
 @property (nonatomic, retain) NSNumber * high;
 @property (nonatomic, retain) NSNumber * low;
 @property (nonatomic, retain) NSNumber * change;
+@property (nonatomic, retain) NSNumber * isValid;
 @property (nonatomic, retain) TFExchange *listingExchange;
 
 @property (readonly) kTFSymolPriceMove priceChange;

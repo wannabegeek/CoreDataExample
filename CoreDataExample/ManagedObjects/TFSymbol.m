@@ -27,6 +27,7 @@
 @dynamic low;
 @dynamic change;
 @dynamic listingExchange;
+@dynamic isValid;
 
 @synthesize connection = _connection;
 @synthesize receiveCache = _receiveCache;
@@ -131,17 +132,26 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     NSLog(@"Connection failed! Error - %@ %@", [error localizedDescription], [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
+	[self willChangeValueForKey:@"refreshInProgress"];
+	_refreshInProgress = NO;
+	[self didChangeValueForKey:@"refreshInProgress"];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     NSLog(@"Succeeded! Received %d bytes of data", [_receiveCache length]);
 
-	NSXMLParser * parser = [[NSXMLParser alloc] initWithData:_receiveCache];
 	[self willChangeValueForKey:@"refreshInProgress"];
 	_refreshInProgress = NO;
 	[self didChangeValueForKey:@"refreshInProgress"];
-	[parser setDelegate:self];
-	[parser parse];
+	
+	if ([_receiveCache length] == 0) {
+		self.isValid = [NSNumber numberWithBool:NO];
+		self.company = @"Invalid Symbol";
+	} else {
+		NSXMLParser * parser = [[NSXMLParser alloc] initWithData:_receiveCache];
+		[parser setDelegate:self];
+		[parser parse];
+	}
 	_connection = nil;
 }
 
@@ -157,6 +167,13 @@
 
 	if ([elementName isEqualToString:@"symbol"]) {
 //		NSString *symbol = [attributeDict valueForKey:@"data"];
+	} else if ([elementName isEqualToString:@"exchange"]) {
+		if ([[attributeDict valueForKey:@"data"] isEqualToString:@"UNKNOWN EXCHANGE"]) {
+			self.isValid = [NSNumber numberWithBool:NO];
+			self.company = @"Invalid Symbol";
+		} else {
+			self.isValid = [NSNumber numberWithBool:YES];
+		}
 	} else if ([elementName isEqualToString:@"company"]) {
 		[changeDictionary setObject:[attributeDict valueForKey:@"data"] forKey:@"company"];
 	} else if ([elementName isEqualToString:@"last"]) {

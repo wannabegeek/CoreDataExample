@@ -9,6 +9,7 @@
         <attribute name="chartURL" optional="YES" attributeType="Transformable" valueTransformerName="URLValueTransformer" syncable="YES"/>
         <attribute name="company" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="high" optional="YES" attributeType="Double" syncable="YES"/>
+        <attribute name="isValid" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastUpdate" optional="YES" attributeType="Date">
             <userInfo/>
         </attribute>
@@ -21,6 +22,6 @@
     </entity>
     <elements>
         <element name="TFExchange" positionX="160" positionY="192" width="128" height="75"/>
-        <element name="TFSymbol" positionX="261" positionY="189" width="128" height="195"/>
+        <element name="TFSymbol" positionX="261" positionY="189" width="128" height="210"/>
     </elements>
 </model>

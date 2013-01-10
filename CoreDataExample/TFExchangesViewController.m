@@ -100,7 +100,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        TFExchange *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+//        TFExchange *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
 //        self.detailViewController.exchange = object;
     } else {
 		[self performSegueWithIdentifier:@"viewSymbols" sender:self];
