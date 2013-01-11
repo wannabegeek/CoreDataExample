@@ -11,7 +11,7 @@
 
 @implementation NSManagedObjectContext (SearchExtensions)
 
-// Convenience method to fetch the array of objects for a given Entity
+// Convenience method to fetch the set of objects for a given Entity
 // name in the context, optionally limiting by a predicate or by a predicate
 // made from a format NSString and variable arguments.
 //

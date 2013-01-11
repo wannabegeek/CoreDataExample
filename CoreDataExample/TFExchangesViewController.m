@@ -85,7 +85,7 @@
         if (![context save:&error]) {
              // Replace this implementation with code to handle the error appropriately.
              // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            ErrorLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
     }   
@@ -116,6 +116,7 @@
 		viewController.exchange = object;
     } else if ([[segue identifier] isEqualToString:@"addExchange"]) {
 		EditStringViewController *viewController = segue.destinationViewController;
+		viewController.comment = @"Add Exchange";
 		viewController.completionHandler = ^(BOOL success, NSString *result) {
 			if (success) {
 				NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
@@ -128,7 +129,7 @@
 				if (![context save:&error]) {
 					// Replace this implementation with code to handle the error appropriately.
 					// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-					NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+					ErrorLog(@"Unresolved error %@, %@", error, [error userInfo]);
 					abort();
 				}
 			}
@@ -168,7 +169,7 @@
 	if (![self.fetchedResultsController performFetch:&error]) {
 	     // Replace this implementation with code to handle the error appropriately.
 	     // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	    ErrorLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	    abort();
 	}
     

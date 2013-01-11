@@ -9,18 +9,23 @@
 #import "BadgeView.h"
 #import "UIColor+Custom.h"
 
+@interface BadgeView ()
+@property (nonatomic, assign) NSUInteger width;
+@end
+
 @implementation BadgeView
 
-@synthesize width, badgeNumber, parent, badgeColor, badgeColorHighlighted;
+@synthesize width = _width;
+@synthesize badgeNumber = _badgeNumber;
+@synthesize parent = _parent;
+@synthesize badgeColor = _badgeColor;
+@synthesize badgeColorHighlighted = _badgeColorHighlighted;
 	// from private
-@synthesize font;
+@synthesize font = _font;
 
-- (id) initWithFrame:(CGRect)frame
-{
-	if (self = [super initWithFrame:frame])
-	{
-		font = [UIFont boldSystemFontOfSize: 14];
-		
+- (id) initWithFrame:(CGRect)frame {
+	if (self = [super initWithFrame:frame]) {
+		_font = [UIFont boldSystemFontOfSize: 14];
 		self.backgroundColor = [UIColor clearColor];
 	}
 	
@@ -28,10 +33,9 @@
 }
 
 - (void) drawRect:(CGRect)rect {	
-	NSString *countString = [[NSString alloc] initWithFormat:@"%d", self.badgeNumber];
+	NSString *countString = [[NSString alloc] initWithFormat:@"%d", _badgeNumber];
 	
-	CGSize numberSize = [countString sizeWithFont: font];
-	
+	CGSize numberSize = [countString sizeWithFont:_font];
 	self.width = numberSize.width + 16;
 	
 	CGRect bounds = CGRectMake(0 , 0, numberSize.width + 16 , 18);
@@ -42,15 +46,15 @@
 	CGContextSaveGState(context);
 	
 	UIColor *col;
-	if (parent.highlighted || parent.selected) {
-		if (self.badgeColorHighlighted) {
-			col = self.badgeColorHighlighted;
+	if (_parent.highlighted || _parent.selected) {
+		if (_badgeColorHighlighted) {
+			col = _badgeColorHighlighted;
 		} else {
 			col = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.000];
 		}
 	} else {
-		if (self.badgeColor) {
-			col = self.badgeColor;
+		if (_badgeColor) {
+			col = _badgeColor;
 		} else {
 			col = [UIColor blueTextColor];
 		}
@@ -68,8 +72,7 @@
 	bounds.origin.x = (bounds.size.width - numberSize.width) / 2 +0.5;
 	
 	CGContextSetBlendMode(context, kCGBlendModeClear);
-	
-	[countString drawInRect:bounds withFont:self.font];
+	[countString drawInRect:bounds withFont:_font];
 }
 
 @end

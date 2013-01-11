@@ -42,7 +42,7 @@
 	[self requestQuote];
 }
 
-// We can't request quote data immediatly since we probably won;t have our ticker value set
+// We can't request quote data immediatly since we probably won't have our ticker value set
 //- (void)awakeFromInsert {
 //	[super awakeFromFetch];
 //	[self requestQuote];
@@ -61,7 +61,7 @@
 - (void)willTurnIntoFault {
 	[super willTurnIntoFault];
 
-	// since we are about to fault, we need to release cancel any outstnding connection requests
+	// since we are about to fault, we need to release cancel any outstanding connection requests
 	[self cancelOutstandingRequests];
 }
 
@@ -69,6 +69,7 @@
 	[self willChangeValueForKey:@"ticker"];
 	[self setPrimitiveValue:ticker forKey:@"ticker"];
 	[self didChangeValueForKey:@"ticker"];
+	// since our ticker has changed we need to request quote update
 	[self requestQuote];
 }
 
@@ -90,7 +91,7 @@
 
 - (void)requestQuote {
 	if (_connection) {
-		NSLog(@"Already have an outstanding request");
+		DebugLog(@"Already have an outstanding request");
 	} else {
 			_receiveCache = [NSMutableData data];
 			NSString *urlString = [NSString stringWithFormat:@"http://www.google.com/ig/api?stock=%@", self.ticker];
@@ -99,7 +100,7 @@
 
 			_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 			if (!_connection) {
-				NSLog(@"Connection failed");
+				InfoLog(@"Connection failed");
 			} else {
 				[self willChangeValueForKey:@"refreshInProgress"];
 				_refreshInProgress = YES;
@@ -116,6 +117,12 @@
 		[self willChangeValueForKey:@"refreshInProgress"];
 		_refreshInProgress = NO;
 		[self didChangeValueForKey:@"refreshInProgress"];
+
+		// Since we are not observing "refreshInProgress" anywhere in our code, ukse KVO to flag some other
+		// Property as changed to the UI updates
+		// - This is a Hack, we should be observing "refreshInProgress"
+		[self willChangeValueForKey:@"company"];
+		[self didChangeValueForKey:@"company"];
 	}
 }
 
@@ -131,14 +138,12 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    NSLog(@"Connection failed! Error - %@ %@", [error localizedDescription], [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
-	[self willChangeValueForKey:@"refreshInProgress"];
-	_refreshInProgress = NO;
-	[self didChangeValueForKey:@"refreshInProgress"];
+    ErrorLog(@"Connection failed! Error - %@ %@", [error localizedDescription], [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
+	[self cancelOutstandingRequests];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    NSLog(@"Succeeded! Received %d bytes of data", [_receiveCache length]);
+    DebugLog(@"Succeeded! Received %d bytes of data", [_receiveCache length]);
 
 	[self willChangeValueForKey:@"refreshInProgress"];
 	_refreshInProgress = NO;

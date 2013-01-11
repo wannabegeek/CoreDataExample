@@ -9,12 +9,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface BadgeView : UIView {
-	NSUInteger width;
-	NSUInteger badgeNumber;
-	
-	UIFont *font;
-}
+@interface BadgeView : UIView
 
 @property (nonatomic, assign) NSUInteger badgeNumber;
 @property (nonatomic, assign) UITableViewCell *parent;
@@ -22,5 +17,4 @@
 @property (nonatomic, strong) UIColor *badgeColorHighlighted;
 
 @property (nonatomic, strong) UIFont *font;
-@property (nonatomic, assign) NSUInteger width;
 @end

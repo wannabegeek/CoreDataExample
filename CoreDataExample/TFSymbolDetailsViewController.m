@@ -61,31 +61,17 @@
     }        
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-	self.title = _symbol.ticker;
-	[self configureView];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-	if (coreDataObserver) {
-		[[NSNotificationCenter defaultCenter] removeObserver:coreDataObserver];
-		coreDataObserver = nil;
-	}
-	// cancel any pending graph image requests
-	[graphImageLoader cancel];
-}
-
 - (void)configureView {
 	if (_symbol) {
 		_tickerLabel.text = _symbol.ticker;
 		_companyLabel.text = _symbol.company;
-		_priceLabel.text = [NSString stringWithFormat:@"%@ (%@)", [priceFormatter stringFromNumber:_symbol.price], [changeFormatter stringFromNumber:_symbol.change]];
+		_priceLabel.text = [NSString stringWithFormat:@"%@ (%@)", [priceFormatter stringForObjectValue:_symbol.price], [changeFormatter stringForObjectValue:_symbol.change]];
 		_priceLabel.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:_symbol.priceChange]];
-		_highLabel.text = [priceFormatter stringFromNumber:_symbol.high];
-		_lowLabel.text = [priceFormatter stringFromNumber:_symbol.low];
-		_volumeLabel.text = [priceFormatter stringFromNumber:_symbol.volume];
+		_highLabel.text = [priceFormatter stringForObjectValue:_symbol.high];
+		_lowLabel.text = [priceFormatter stringForObjectValue:_symbol.low];
+		_volumeLabel.text = [priceFormatter stringForObjectValue:_symbol.volume];
 
-		// This isn't very nice we will reload the graph image every time we receive any sort or update
+		// This isn't very nice we will reload the graph image every time we receive any sort of update
 		TFAsynchronousURLLoader *loader = [[TFAsynchronousURLLoader alloc] init];
 		graphImageLoader = [loader asynchonouslLoadDataFromURL:_symbol.chartURL completionHander:^(BOOL success, NSData *value) {
 			if (success) {
@@ -99,6 +85,20 @@
 	if (_symbol) {
 		[_symbol requestQuote];
 	}
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+	self.title = _symbol.ticker;
+	[self configureView];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+	if (coreDataObserver) {
+		[[NSNotificationCenter defaultCenter] removeObserver:coreDataObserver];
+		coreDataObserver = nil;
+	}
+	// cancel any pending graph image requests
+	[graphImageLoader cancel];
 }
 
 - (void)viewDidLoad {

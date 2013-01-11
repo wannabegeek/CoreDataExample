@@ -8,19 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@class BadgeView;
-
-@interface BadgedTableViewCell : UITableViewCell {
-	NSInteger badgeNumber;
-	BadgeView *badge;
-	
-	UIColor *badgeColor;
-	UIColor *badgeColorHighlighted;
-}
+@interface BadgedTableViewCell : UITableViewCell
 
 @property NSInteger badgeNumber;
-@property (readonly, retain) BadgeView *badge;
-@property (nonatomic, retain) UIColor *badgeColor;
-@property (nonatomic, retain) UIColor *badgeColorHighlighted;
+@property (nonatomic, strong) UIColor *badgeColor;
+@property (nonatomic, strong) UIColor *badgeColorHighlighted;
 
 @end

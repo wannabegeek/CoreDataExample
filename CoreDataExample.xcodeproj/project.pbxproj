@@ -44,6 +44,8 @@
 		E25FE3BB169E1A5200A67EBE /* TFAsynchronousURLLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3BA169E1A5200A67EBE /* TFAsynchronousURLLoader.m */; };
 		E25FE3BE169E207F00A67EBE /* TFPriceMoveColourValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3BD169E207E00A67EBE /* TFPriceMoveColourValueTransformer.m */; };
 		E25FE3C4169EA93500A67EBE /* CoreDataSeed.plist in Resources */ = {isa = PBXBuildFile; fileRef = E25FE3C3169EA93500A67EBE /* CoreDataSeed.plist */; };
+		E25FE3C916A0164700A67EBE /* TFLog.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3C816A0164700A67EBE /* TFLog.m */; };
+		E25FE3CA16A0164700A67EBE /* TFLog.m in Sources */ = {isa = PBXBuildFile; fileRef = E25FE3C816A0164700A67EBE /* TFLog.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +113,9 @@
 		E25FE3BC169E207E00A67EBE /* TFPriceMoveColourValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFPriceMoveColourValueTransformer.h; sourceTree = "<group>"; };
 		E25FE3BD169E207E00A67EBE /* TFPriceMoveColourValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFPriceMoveColourValueTransformer.m; sourceTree = "<group>"; };
 		E25FE3C3169EA93500A67EBE /* CoreDataSeed.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CoreDataSeed.plist; sourceTree = "<group>"; };
+		E25FE3C616A014CC00A67EBE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
+		E25FE3C716A0164700A67EBE /* TFLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFLog.h; sourceTree = "<group>"; };
+		E25FE3C816A0164700A67EBE /* TFLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFLog.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,16 +178,12 @@
 		E25FE343169DC05700A67EBE /* CoreDataExample */ = {
 			isa = PBXGroup;
 			children = (
+				E25FE3C616A014CC00A67EBE /* README.md */,
 				E25FE34C169DC05700A67EBE /* TFAppDelegate.h */,
 				E25FE34D169DC05700A67EBE /* TFAppDelegate.m */,
-				E25FE355169DC05700A67EBE /* MainStoryboard_iPhone.storyboard */,
-				E25FE358169DC05700A67EBE /* MainStoryboard_iPad.storyboard */,
-				E25FE35E169DC05700A67EBE /* TFExchangesViewController.h */,
-				E25FE35F169DC05700A67EBE /* TFExchangesViewController.m */,
-				E25FE3A1169DCD4400A67EBE /* TFSymbolsViewController.h */,
-				E25FE3A2169DCD4500A67EBE /* TFSymbolsViewController.m */,
-				E25FE361169DC05700A67EBE /* TFSymbolDetailsViewController.h */,
-				E25FE362169DC05700A67EBE /* TFSymbolDetailsViewController.m */,
+				E25FE3C5169F60BD00A67EBE /* View Controllers */,
+				E25FE3AD169DF7D200A67EBE /* String Input ViewController */,
+				E25FE397169DC8D100A67EBE /* Managed Objects */,
 				E25FE3A4169DCD7C00A67EBE /* StockTableViewCell.h */,
 				E25FE3A5169DCD7C00A67EBE /* StockTableViewCell.m */,
 				E25FE38C169DC79E00A67EBE /* URLValueTransformer.h */,
@@ -197,12 +198,9 @@
 				E25FE39F169DCA7D00A67EBE /* UIColor+Custom.m */,
 				E25FE3B6169E0F9A00A67EBE /* NSManagedObjectContext+SearchExtensions.h */,
 				E25FE3B7169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m */,
-				E25FE3AD169DF7D200A67EBE /* String Input ViewController */,
-				E25FE35B169DC05700A67EBE /* CoreDataExample.xcdatamodeld */,
-				E25FE397169DC8D100A67EBE /* Managed Objects */,
-				E25FE344169DC05700A67EBE /* Supporting Files */,
 				E25FE3B9169E1A5200A67EBE /* TFAsynchronousURLLoader.h */,
 				E25FE3BA169E1A5200A67EBE /* TFAsynchronousURLLoader.m */,
+				E25FE344169DC05700A67EBE /* Supporting Files */,
 			);
 			path = CoreDataExample;
 			sourceTree = "<group>";
@@ -210,10 +208,15 @@
 		E25FE344169DC05700A67EBE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E25FE35B169DC05700A67EBE /* CoreDataExample.xcdatamodeld */,
+				E25FE355169DC05700A67EBE /* MainStoryboard_iPhone.storyboard */,
+				E25FE358169DC05700A67EBE /* MainStoryboard_iPad.storyboard */,
 				E25FE345169DC05700A67EBE /* CoreDataExample-Info.plist */,
 				E25FE346169DC05700A67EBE /* InfoPlist.strings */,
 				E25FE349169DC05700A67EBE /* main.m */,
 				E25FE34B169DC05700A67EBE /* CoreDataExample-Prefix.pch */,
+				E25FE3C716A0164700A67EBE /* TFLog.h */,
+				E25FE3C816A0164700A67EBE /* TFLog.m */,
 				E25FE34F169DC05700A67EBE /* Default.png */,
 				E25FE351169DC05700A67EBE /* Default@2x.png */,
 				E25FE353169DC05700A67EBE /* Default-568h@2x.png */,
@@ -261,6 +264,19 @@
 				E25FE3AB169DF7CC00A67EBE /* StringInputTableViewCell.m */,
 			);
 			name = "String Input ViewController";
+			sourceTree = "<group>";
+		};
+		E25FE3C5169F60BD00A67EBE /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				E25FE35E169DC05700A67EBE /* TFExchangesViewController.h */,
+				E25FE35F169DC05700A67EBE /* TFExchangesViewController.m */,
+				E25FE3A1169DCD4400A67EBE /* TFSymbolsViewController.h */,
+				E25FE3A2169DCD4500A67EBE /* TFSymbolsViewController.m */,
+				E25FE361169DC05700A67EBE /* TFSymbolDetailsViewController.h */,
+				E25FE362169DC05700A67EBE /* TFSymbolDetailsViewController.m */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -394,6 +410,7 @@
 				E25FE3B8169E0F9B00A67EBE /* NSManagedObjectContext+SearchExtensions.m in Sources */,
 				E25FE3BB169E1A5200A67EBE /* TFAsynchronousURLLoader.m in Sources */,
 				E25FE3BE169E207F00A67EBE /* TFPriceMoveColourValueTransformer.m in Sources */,
+				E25FE3C916A0164700A67EBE /* TFLog.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,6 +421,7 @@
 				E25FE379169DC05800A67EBE /* CoreDataExampleTests.m in Sources */,
 				E25FE392169DC8C800A67EBE /* TFExchange.m in Sources */,
 				E25FE396169DC8C800A67EBE /* TFSymbol.m in Sources */,
+				E25FE3CA16A0164700A67EBE /* TFLog.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

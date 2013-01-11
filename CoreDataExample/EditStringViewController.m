@@ -42,27 +42,15 @@
 
 #pragma mark - View lifecycle
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 	_navigationBar.topItem.title = self.title;
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 	StringInputTableViewCell *cell = (StringInputTableViewCell *)[_inputTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 	[cell.textField becomeFirstResponder];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
@@ -75,18 +63,15 @@
 	return _comment;
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 1;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     StringInputTableViewCell *cell = (StringInputTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"EditStringCell"];
 	cell.textLabel.text = _text;
 	cell.textField.text = _value;

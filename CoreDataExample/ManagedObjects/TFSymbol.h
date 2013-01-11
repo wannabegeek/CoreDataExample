@@ -32,6 +32,6 @@ typedef enum {
 @property (nonatomic, retain) TFExchange *listingExchange;
 
 @property (readonly) kTFSymolPriceMove priceChange;
-@property (readonly) BOOL refreshInProgress;
+@property (readonly) BOOL refreshInProgress; // KVO
 - (void)requestQuote;
 @end

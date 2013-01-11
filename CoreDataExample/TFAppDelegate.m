@@ -22,6 +22,40 @@
 
 @synthesize requiresSeeding = _requiresSeeding;
 
+- (void)seedCoreDataStore {
+	NSURL *url = [[NSBundle mainBundle] URLForResource:@"CoreDataSeed" withExtension:@"plist"];
+
+	if (url) {
+		NSManagedObjectContext *seedContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+		seedContext.parentContext = self.managedObjectContext;
+
+		[seedContext performBlock:^{
+			NSDictionary *seedData = [NSDictionary dictionaryWithContentsOfURL:url];
+			for (NSString *exchange in seedData) {
+				NSManagedObject *newExchange = [NSEntityDescription insertNewObjectForEntityForName:@"TFExchange" inManagedObjectContext:seedContext];
+				[newExchange setValue:exchange forKey:@"mnemonic"];
+
+				NSMutableSet *symbols = [newExchange mutableSetValueForKey:@"symbols"];
+				for (NSString *symbol in [seedData valueForKey:exchange]) {
+					NSManagedObject *newSymbol = [NSEntityDescription insertNewObjectForEntityForName:@"TFSymbol" inManagedObjectContext:seedContext];
+					[newSymbol setValue:symbol forKey:@"ticker"];
+					[symbols addObject:newSymbol];
+				}
+			}
+
+			NSError *error = nil;
+			if (![seedContext save:&error]) {
+				ErrorLog(@"Failed to seed core data store: %@", error);
+			} else {
+				// we also need to make sure our changes are persisted, so save the main context too.
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[self saveContext];
+				});
+			}
+		}];
+	}
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
@@ -70,71 +104,34 @@
 	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application
-{
+- (void)applicationWillTerminate:(UIApplication *)application {
 	// Saves changes in the application's managed object context before the application terminates.
 	[self saveContext];
 }
 
-- (void)saveContext
-{
+- (void)saveContext {
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     if (managedObjectContext != nil) {
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-			NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+			ErrorLog(@"Failed to save to data store: %@", [error localizedDescription]);
 			NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
 			if(detailedErrors != nil && [detailedErrors count] > 0) {
 				for(NSError* detailedError in detailedErrors) {
-					NSLog(@"  DetailedError: %@", [detailedError userInfo]);
+					ErrorLog(@"  DetailedError: %@", [detailedError userInfo]);
 				}
 			}else {
-				NSLog(@"  %@", [error userInfo]);
+				ErrorLog(@"  %@", [error userInfo]);
 			}
         }
     }
-}
-
-- (void)seedCoreDataStore {
-	NSURL *url = [[NSBundle mainBundle] URLForResource:@"CoreDataSeed" withExtension:@"plist"];
-
-	if (url) {
-		NSManagedObjectContext *seedContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-		seedContext.parentContext = self.managedObjectContext;
-
-		[seedContext performBlock:^{
-			NSDictionary *seedData = [NSDictionary dictionaryWithContentsOfURL:url];
-			for (NSString *exchange in seedData) {
-				NSManagedObject *newExchange = [NSEntityDescription insertNewObjectForEntityForName:@"TFExchange" inManagedObjectContext:seedContext];
-				[newExchange setValue:exchange forKey:@"mnemonic"];
-
-				NSMutableSet *symbols = [newExchange mutableSetValueForKey:@"symbols"];
-				for (NSString *symbol in [seedData valueForKey:exchange]) {
-					NSManagedObject *newSymbol = [NSEntityDescription insertNewObjectForEntityForName:@"TFSymbol" inManagedObjectContext:seedContext];
-					[newSymbol setValue:symbol forKey:@"ticker"];
-					[symbols addObject:newSymbol];
-				}
-			}
-
-			NSError *error = nil;
-			if (![seedContext save:&error]) {
-				NSLog(@"Failed to seed core data store: %@", error);
-			} else {
-				// we also need to make sure our changes are persisted, so save the main context too.
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[self saveContext];
-				});
-			}
-		}];
-	}
 }
 
 #pragma mark - Core Data stack
 
 // Returns the managed object context for the application.
 // If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
-- (NSManagedObjectContext *)managedObjectContext
-{
+- (NSManagedObjectContext *)managedObjectContext {
     if (_managedObjectContext != nil) {
         return _managedObjectContext;
     }
@@ -149,8 +146,7 @@
 
 // Returns the managed object model for the application.
 // If the model doesn't already exist, it is created from the application's model.
-- (NSManagedObjectModel *)managedObjectModel
-{
+- (NSManagedObjectModel *)managedObjectModel {
     if (_managedObjectModel != nil) {
         return _managedObjectModel;
     }
@@ -161,8 +157,7 @@
 
 // Returns the persistent store coordinator for the application.
 // If the coordinator doesn't already exist, it is created and the application's store added to it.
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator
-{
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
     if (_persistentStoreCoordinator != nil) {
         return _persistentStoreCoordinator;
     }
@@ -199,7 +194,7 @@
          Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
          
          */
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        ErrorLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }    
     
@@ -209,8 +204,7 @@
 #pragma mark - Application's Documents directory
 
 // Returns the URL to the application's Documents directory.
-- (NSURL *)applicationDocumentsDirectory
-{
+- (NSURL *)applicationDocumentsDirectory {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 

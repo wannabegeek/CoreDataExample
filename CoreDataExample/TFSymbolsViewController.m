@@ -31,9 +31,6 @@
 
 @implementation TFSymbolsViewController
 
-//@synthesize fetchedResultsController = _fetchedResultsController;
-//@synthesize managedObjectContext = _managedObjectContext;
-
 @synthesize  exchange = _exchange;
 @synthesize basePredicate = _basePredicate;
 
@@ -85,7 +82,7 @@
 	NSError *error = nil;
 	[[self fetchedResultsController] performFetch:&error];
 	if (error) {
-		NSLog(@"Error Occoured: %@", error);
+		ErrorLog(@"Error Occoured: %@", error);
 	}
 }
 
@@ -112,9 +109,13 @@
     TFSymbol *symbol = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.ticker.text = symbol.ticker;
     cell.companyName.text = symbol.company;
-    cell.price.text = [priceFormatter stringFromNumber:symbol.price];
+
+	// we have to call "stringForObjectValue:" on the NSNumberFormatter here since
+	// stringFromNumber will return "(null)" for nil objects "stringForObjectValue:" will correctly
+	// populate the nilSymbol set on the formatter object
+    cell.price.text = [priceFormatter stringForObjectValue:symbol.price];
 	cell.price.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:symbol.priceChange]];
-    cell.change.text = [NSString stringWithFormat:@"(%@)", [changeFormatter stringFromNumber:symbol.change]];
+    cell.change.text = [NSString stringWithFormat:@"(%@)", [changeFormatter stringForObjectValue:symbol.change]];
 	cell.change.textColor = [priceColorTransformer transformedValue:[NSNumber numberWithInteger:symbol.priceChange]];
 
 	if ([symbol.isValid boolValue]) {
@@ -165,7 +166,7 @@
         if (![context save:&error]) {
 			// Replace this implementation with code to handle the error appropriately.
 			// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            ErrorLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
     }
@@ -194,12 +195,13 @@
     if ([[segue identifier] isEqualToString:@"viewDetails"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         TFSymbol *symbol = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-		NSLog(@"Displaying details for %@", symbol.ticker);
+		DebugLog(@"Displaying details for %@", symbol.ticker);
 		TFSymbolDetailsViewController *viewController = segue.destinationViewController;
 		viewController.symbol = symbol;
 	} else if ([[segue identifier] isEqualToString:@"addSymbol"]) {
 
 		EditStringViewController *viewController = segue.destinationViewController;
+		viewController.comment = @"Add Symbol";
 		viewController.completionHandler = ^(BOOL success, NSString *result) {
 			if (success) {
 				NSEntityDescription *entity = [self.fetchedResultsController.fetchRequest entity];
@@ -213,7 +215,7 @@
 				if (![self.fetchedResultsController.managedObjectContext save:&error]) {
 					// Replace this implementation with code to handle the error appropriately.
 					// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-					NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+					ErrorLog(@"Unresolved error %@, %@", error, [error userInfo]);
 					abort();
 				}
 			}
@@ -255,7 +257,7 @@
 	if (![self.fetchedResultsController performFetch:&error]) {
 		// Replace this implementation with code to handle the error appropriately.
 		// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	    ErrorLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	    abort();
 	}
 
@@ -322,7 +324,7 @@
 	NSError *error = nil;
 	[[self fetchedResultsController] performFetch:&error];
 	if (error) {
-		NSLog(@"Error Occoured: %@", error);
+		ErrorLog(@"Error Occoured: %@", error);
 	}
 }
 
@@ -331,7 +333,7 @@
 	NSError *error = nil;
 	[[self fetchedResultsController] performFetch:&error];
 	if (error) {
-		NSLog(@"Error Occoured: %@", error);
+		ErrorLog(@"Error Occoured: %@", error);
 	}
 
     return;
